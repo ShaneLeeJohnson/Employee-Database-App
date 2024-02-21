@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const TextTable = require('text-table');
 const dotenv = require('dotenv');
 dotenv.config();
 const mysqlPassword = process.env.MYSQL_PASSWORD;
@@ -30,20 +29,27 @@ function init() {
             const choice = answers.dataOption
             console.log(choice);
 
-            if (choice === 'View all departments') {
-                db.query('SELECT * FROM department', function (err, results) {
-                    if (err) throw err;
+            switch (choice) {
+                case 'View all departments':
+                    db.query('SELECT * FROM department', function (err, results) {
+                        if (err) throw err;
 
-                    if (results.length === 0) {
-                        console.log('No departments found');
-                        return;
-                    }
+                        if (results.length === 0) {
+                            console.log('No departments found');
+                            return;
+                        }
 
-                    console.table(results);
-                    init();
-                })
-            } else if (choice === 'Quit') {
-                return;
+                        console.table(results);
+                        init();
+                    })
+                    break;
+                case 'View all roles':
+                    db.query('SELECT * FROM role', function (err, results) {
+                        console.table(results);
+                        init();
+                    })
+                default:
+                    console.log('Press Ctrl C to exit');
             }
         });
 }
