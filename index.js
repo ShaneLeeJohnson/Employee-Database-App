@@ -54,6 +54,23 @@ function init() {
                         console.table(results);
                         init();
                     })
+                    break;
+                case 'Add a department':
+                    inquirer.prompt({
+                        type: 'input',
+                        name: 'addDepartment',
+                        message: 'What is the name of the department?'
+                    })
+                        .then((answers) => {
+                            const newDepartmentName = answers.addDepartment
+                            const sql = `INSERT INTO department (name) VALUES (?)`;
+                            db.query(sql, [newDepartmentName], (err, results) => {
+                                console.log(`Added ${newDepartmentName} to the department database`);
+                                init();
+                            });
+                        })
+                        .catch((err) => console.error(err));
+                    break;
                 default:
                     console.log('Press Ctrl C to exit');
             }
