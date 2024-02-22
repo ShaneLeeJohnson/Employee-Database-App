@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const mysqlPassword = process.env.MYSQL_PASSWORD;
 
-const questions = [
+const question = [
     {
         type: 'list',
         name: 'dataOption',
@@ -24,7 +24,7 @@ const db = mysql.createConnection(
 );
 
 function init() {
-    inquirer.prompt(questions)
+    inquirer.prompt(question)
         .then((answers) => {
             const choice = answers.dataOption
             console.log(choice);
@@ -65,7 +65,60 @@ function init() {
                             const newDepartmentName = answers.addDepartment
                             const sql = `INSERT INTO department (name) VALUES (?)`;
                             db.query(sql, [newDepartmentName], (err, results) => {
+                                if (err) throw err;
                                 console.log(`Added ${newDepartmentName} to the department database`);
+                                init();
+                            });
+                        })
+                        .catch((err) => console.error(err));
+                    break;
+                case 'Add a role':
+                    const roleQuestions = [
+                        {
+                            type: 'input',
+                            name: 'roleTitle',
+                            message: 'What is the title of the new role?',
+                        },
+                        {
+                            type: 'number',
+                            name: 'roleSalary',
+                            message: 'What is the salary for the new role?',
+                            validate: (value) => {
+                                if (isNaN(value) || value <= 0) {
+                                    return 'Please enter a valid positive number for salary.';
+                                }
+                                return true;
+                            },
+                        },
+                        {
+                            type: 'list',
+                            name: 'departmentId',
+                            message: 'Which department does this role belong to?',
+                            choices() {
+                                return new Promise((resolve, reject) => {
+                                    db.query('SELECT id, name FROM department', (err, results) => {
+                                        if (err) {
+                                            reject(err);
+                                            return;
+                                        }
+                                        resolve(results.map((department) => ({
+                                            name: department.name,
+                                            value: department.id,
+                                        })));
+                                    });
+                                });
+                            },
+                        },
+                    ];
+                    inquirer.prompt(roleQuestions)
+                        .then((answers) => {
+                            const newRoleTitle = answers.roleTitle;
+                            const newRoleSalary = answers.roleSalary;
+                            const newRoleDepartmentId = answers.departmentId;
+                            const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+                            db.query(sql, [newRoleTitle, newRoleSalary, newRoleDepartmentId], (err, results) => {
+                                if (err) throw err;
+                                console.log(`Added ${newRoleTitle} to the role database`);
                                 init();
                             });
                         })
