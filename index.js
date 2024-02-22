@@ -44,7 +44,13 @@ function init() {
                     })
                     break;
                 case 'View all roles':
-                    db.query('SELECT * FROM role', function (err, results) {
+                    db.query('SELECT r.id, r.title, d.name AS department, r.salary FROM role r INNER JOIN department d ON r.department_id = d.id;', function (err, results) {
+                        console.table(results);
+                        init();
+                    })
+                    break;
+                case 'View all employees':
+                    db.query('SELECT e.id, e.first_name, e.last_name, r.title AS title, d.name AS department, r.salary, CONCAT(m.first_name, \' \', m.last_name) AS manager FROM employees e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id LEFT JOIN employees m ON e.manager_id = m.id;', function (err, results) {
                         console.table(results);
                         init();
                     })
