@@ -1,4 +1,4 @@
-const db = require('./config/connection');
+const db = require('../config/connection');
 const inquirer = require('inquirer');
 
 function viewAllDepartments(callback) {
@@ -183,4 +183,59 @@ function addEmployee(callback) {
         .catch((err) => console.error(err));
 }
 
-module.exports = { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee };
+function updateRole(callback) {
+    const updateQuestions = [
+        {
+            type: 'list',
+            name: 'employeeName',
+            message: `Which employee's role do you want to update?`,
+            choices() {
+                return new Promise((resolve, reject) => {
+                    db.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employees', (err, results) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(results.map((employee) => ({
+                            name: employee.name,
+                            value: employee.id,
+                        })));
+                    });
+                });
+            },
+        },
+        {
+            type: 'list',
+            name: 'newRole',
+            message: 'Which role do you want to assign to the employee?',
+            choices() {
+                return new Promise((resolve, reject) => {
+                    db.query('SELECT id, title FROM role', (err, results) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve(results.map((role) => ({
+                            name: role.title,
+                            value: role.id,
+                        })));
+                    });
+                });
+            },
+        },
+    ];
+    inquirer.prompt(updateQuestions)
+        .then((answers) => {
+            const chosenEmployee = answers.employeeName;
+            const updatedRole = answers.newRole;
+            const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+            db.query(sql, [updatedRole, chosenEmployee], (err, results) => {
+                if (err) throw err;
+                console.log('Employee role updated successfully!');
+                callback();
+            });
+        })
+        .catch((err) => console.error(err));
+}
+
+module.exports = { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateRole };
