@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
-// const db = require('./config/connection');
-const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee } = require('./queries')
+const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateRole } = require('./queries/queries')
 
 const question = [
     {
@@ -35,6 +34,9 @@ function init() {
                     break;
                 case 'Add an employee':
                     addEmployee(init);
+                    break;
+                case 'Update an employee role':
+                    updateRole(init);
                     break;
                 default:
                     process.exit(0);
