@@ -1,6 +1,9 @@
+// imports the db variable from the connection file
 const db = require('../config/connection');
+// imports the inquirer package
 const inquirer = require('inquirer');
 
+// function for the view all departments option. Displays a table that shows the department id and name
 function viewAllDepartments(callback) {
     db.query('SELECT * FROM department', function (err, results) {
         if (err) throw err;
@@ -15,6 +18,8 @@ function viewAllDepartments(callback) {
     });
 }
 
+// function for the view all roles option. Displays a table that shows the id, title, the department the role belongs to
+// and the salary for the role
 function viewAllRoles(callback) {
     db.query('SELECT r.id, r.title, d.name AS department, r.salary FROM role r INNER JOIN department d ON r.department_id = d.id;', function (err, results) {
         if (err) throw err;
@@ -29,6 +34,8 @@ function viewAllRoles(callback) {
     });
 }
 
+// function for the view all employees option. Displays a table that shows the id, first name, last name,
+// the employees role, department, salary, and if the employee has a manager
 function viewAllEmployees(callback) {
     db.query('SELECT e.id, e.first_name, e.last_name, r.title AS title, d.name AS department, r.salary, CONCAT(m.first_name, \' \', m.last_name) AS manager FROM employees e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id LEFT JOIN employees m ON e.manager_id = m.id ORDER BY e.id ASC;', function (err, results) {
         if (err) throw err;
@@ -43,6 +50,8 @@ function viewAllEmployees(callback) {
     });
 }
 
+// function for the add a department option. Prompts the user to enter a name for the department and then
+// adds it to the bottom of the department table
 function addDepartment(callback) {
     inquirer.prompt({
         type: 'input',
@@ -61,6 +70,8 @@ function addDepartment(callback) {
         .catch((err) => console.error(err));
 }
 
+// function for the add a role option. Prompts the user to enter a name for the role, the salary for the role,
+// and select which department the role belongs to. The new role is then added to the bottom of the role table
 function addRole(callback) {
     const roleQuestions = [
         {
@@ -114,6 +125,9 @@ function addRole(callback) {
         .catch((err) => console.error(err));
 }
 
+// function for the add employee option. Prompts the user to enter a first and last name for the employee,
+// choose from the list of roles, and choose an employee to be the new employees manager or select none
+// if the employee won't have a manager. After all of this the new employee is added to the bottom of the employees table
 function addEmployee(callback) {
     const employeeQuestions = [
         {
@@ -183,6 +197,8 @@ function addEmployee(callback) {
         .catch((err) => console.error(err));
 }
 
+// function for the update employee role option. Prompts the user to select a current employee and choose
+// a new role for them from the list of roles. After this the employees role will be updated.
 function updateRole(callback) {
     const updateQuestions = [
         {
@@ -238,4 +254,5 @@ function updateRole(callback) {
         .catch((err) => console.error(err));
 }
 
+// exports all of the functions to be used in the index.js file
 module.exports = { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateRole };
