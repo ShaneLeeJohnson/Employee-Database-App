@@ -14,7 +14,7 @@ To use this application, the user will need to open their command line terminal 
 
 To see the application in action, please watch the following video:
 
-
+[Employee-Database-App-Demo.webm](https://github.com/ShaneLeeJohnson/Employee-Database-App/assets/77424320/fd6310a5-46f5-48ec-9489-5de26532a350)
 
 ## License
 
