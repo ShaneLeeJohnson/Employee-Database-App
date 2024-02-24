@@ -2,9 +2,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "inquirer": "^8.2.4",
-    "mysql2": "^3.9.1",
-    "table": "^6.8.1",
-    "text-table": "^0.2.0"
+    "mysql2": "^3.9.1"
   },
   "name": "employee-database-app",
   "description": "The Employee Database App allows an organization to manage their employee data by giving them options for different tables including all departments, all roles, and all employees. The employer can also use this app to add new departments, employees and roles to the database.",

@@ -1,6 +1,9 @@
+// Imports the inquirer package
 const inquirer = require('inquirer');
+// Imports the functions from the queries file
 const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateRole } = require('./queries/queries')
 
+// Prompts the user with the options for how they want to manipulate the employee database
 const question = [
     {
         type: 'list',
@@ -10,6 +13,7 @@ const question = [
     }
 ]
 
+// Function that responds the the choice the user selects from the question prompt and handles each case. When the user selects Quit, the application exits.
 function init() {
     inquirer.prompt(question)
         .then((answers) => {
